@@ -1,5 +1,7 @@
+FUNCTION 
+Ident: test
 LPAREN 
-Number: 3
-ADD 
-Number: 2
+Ident: test
+COMMA 
+Ident: test2
 RPAREN 
