@@ -46,6 +46,17 @@ class Statement(Program):
                 raise Exception('Invalid Syntax--Function definition call must end in )')
         return True
 
+    def Functionbody(self):
+        self.linecount += 1
+        while self.line != "RETURN \n" and self.linecount + 1 < len(self.line):
+            self.linecount += 1
+        if (self.line[self.linecount - 1] == "RETURN \n" and self.line[self.linecount] == "RBRACE \n"):
+            self.linecount += 1
+            path[0][1][1][1][1][1].append(["FunctionBody"])
+            return
+        else:
+            raise Exception("Function must end in }")
+        print("body")
     def Functiondec(self):
         path[0].append(["Statement"])
         flag = 0
@@ -66,6 +77,11 @@ class Statement(Program):
                     self.Namelist()
             elif ("Ident" not in parse or flag == 1):
                 path[0][1].pop()
+            self.linecount += 1
+            path[0][1][1][1][1].append(["FunctionBody"])
+            if self.line[self.linecount] == "LBRACE \n":
+                self.Functionbody()
+
 
             print(path)
 

@@ -1,7 +1,10 @@
 FUNCTION 
 Ident: test
 LPAREN 
-Ident: test
+Ident: x1
 COMMA 
-Ident: test2
+Ident: x2
 RPAREN 
+LBRACE 
+RETURN 
+RBRACE 

@@ -4,7 +4,7 @@ final = []
 punc = re.compile(r"[+-/*]")
 Numbers = re.compile("((\d+(\.\d*)?)|(\.\d+))")
 Variables = re.compile("[a-zA-Z]+[a-zA-Z0-9_]*")
-Punct = re.compile(r"[,/[\]:\".\'\(\)]")
+Punct = re.compile(r"[,/{\}:\".\'\(\)]")
 Operaters = re.compile(r"[\+\-\*\/\=\^]")
 Keywords = {
     'print': "PRINT ",
@@ -18,8 +18,8 @@ def puncfunc(start, point, parse):
     Options = {
         '(': "LPAREN ",
         ')': 'RPAREN ',
-        '[': 'LBRACE ',
-        ']': 'RBRACE ',
+        '{': 'LBRACE ',
+        '}': 'RBRACE ',
         ',': 'COMMA ',
         ':': 'COLON '
     }
@@ -77,7 +77,7 @@ def main():
                         '-': 'SUB ',
                         '*': 'MULT ',
                         '/': 'DIV ',
-                        '=': 'EQUAL ',
+                        '=': 'Assign ',
                         '^': 'EXP'
                     }
                     final.insert(len(final), Options.get(parse[pointer][matchstart]))
