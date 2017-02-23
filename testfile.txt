@@ -2,9 +2,6 @@ FUNCTION
 Ident: test
 LPAREN 
 Ident: test
-RPAREN
-FUNCTION
+COMMA 
 Ident: test2
-LPAREN
-Ident: test
-RPAREN
+RPAREN 

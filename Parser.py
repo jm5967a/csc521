@@ -30,6 +30,9 @@ class Statement(Program):
         self.linecount += 1
         while self.line[self.linecount] != "RPAREN \n":
             if 'Ident' in self.line[self.linecount] or 'NUMBER:' in self.line[self.linecount]:
+                print(path[0][1][1][1][1])
+                x = len(self.line[self.linecount])
+                path[0][1][1][1][1].append(self.line[self.linecount][0:x - 1] + " ")
                 self.linecount += 1
                 if 'RPAREN \n' == self.line[self.linecount]:
                     break
@@ -55,7 +58,6 @@ class Statement(Program):
                 path[0][1][1].append(["Name: " + parse[:len(parse) - 1]])
                 self.linecount += 1
                 parse = self.line[self.linecount:self.linecount + 4]
-                print(parse[0] == 'LPAREN\n')
                 if (parse[0] == 'LPAREN \n' and parse[1] == 'RPAREN \n'):
                     path[0][1][1][1].append(["Function Params"])
                     self.linecount += 1
@@ -65,14 +67,7 @@ class Statement(Program):
             elif ("Ident" not in parse or flag == 1):
                 path[0][1].pop()
 
-            import json
-            test = str(path)
-            print(type(test))
-            aParseTree = path
-            serializedParseTree = json.dumps(aParseTree)
-            print(type(serializedParseTree))
-            aCopyOfTheParseTree = json.loads(serializedParseTree)
-            print(aCopyOfTheParseTree)
+            print(path)
 
 
 
