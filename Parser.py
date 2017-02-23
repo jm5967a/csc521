@@ -52,7 +52,7 @@ class Statement(Program):
             parse = self.line[self.linecount]
             print(parse)
             if ("Ident" in parse):
-                path[0][1][1].append(["Name: " + parse[7:len(parse) - 1]])
+                path[0][1][1].append(["Name: " + parse[:len(parse) - 1]])
                 self.linecount += 1
                 parse = self.line[self.linecount:self.linecount + 4]
                 print(parse[0] == 'LPAREN\n')
@@ -65,22 +65,16 @@ class Statement(Program):
             elif ("Ident" not in parse or flag == 1):
                 path[0][1].pop()
 
-            print(path)
+            import json
+            test = str(path)
+            print(type(test))
+            aParseTree = path
+            serializedParseTree = json.dumps(aParseTree)
+            print(type(serializedParseTree))
+            aCopyOfTheParseTree = json.loads(serializedParseTree)
+            print(aCopyOfTheParseTree)
 
 
-# def Expression(line):
-#      if(line== "ADD" or line=="SUB"):
-#          final.insert(len(final), line)
-# def Declaration(count):
-#     print(lines[count-1])
-# def funcdef(count):
-#     print('func\n')
-#     print(lines[count - 1])
-# def Print():
-#    pass
-# def Name(value):
-#     if("Ident" in value):
-#         return True
 
 def main():
     f = open('testfile.txt')
@@ -89,15 +83,6 @@ def main():
     path.append(["Program"])
     x = Statement(lines, linecount)
     x.Functiondec()
-
-
-# <Program> -> <Statement> <Program> | <Statement>
-#
-# <Statement> -> <FunctionDeclaration> | <Assignment> | <Print>
-#
-#
-# //function declaration statements
-# <FunctionDeclaration> -> FUNCTION <Name> <FunctionParams> LBRACE <FunctionBody> RBRACE
 
 
 main()
