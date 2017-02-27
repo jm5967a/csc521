@@ -30,7 +30,6 @@ class Statement(Program):
         self.linecount += 1
         while self.line[self.linecount] != "RPAREN \n":
             if 'Ident' in self.line[self.linecount] or 'NUMBER:' in self.line[self.linecount]:
-                print(path[0][1][1][1][1])
                 x = len(self.line[self.linecount])
                 path[0][1][1][1][1].append(self.line[self.linecount][0:x - 1] + " ")
                 self.linecount += 1
@@ -46,17 +45,17 @@ class Statement(Program):
                 raise Exception('Invalid Syntax--Function definition call must end in )')
         return True
 
+    def ParameterList(self):
+        pass
     def Functionbody(self):
         self.linecount += 1
         while self.line != "RETURN \n" and self.linecount + 1 < len(self.line):
             self.linecount += 1
         if (self.line[self.linecount - 1] == "RETURN \n" and self.line[self.linecount] == "RBRACE \n"):
             self.linecount += 1
-            path[0][1][1][1][1][1].append(["FunctionBody"])
             return
         else:
             raise Exception("Function must end in }")
-        print("body")
     def Functiondec(self):
         path[0].append(["Statement"])
         flag = 0
