@@ -7,4 +7,7 @@ Ident: x2
 RPAREN 
 LBRACE 
 RETURN 
-RBRACE 
+Ident: x2
+COMMA
+Ident: x3
+RBRACE

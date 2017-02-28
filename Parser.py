@@ -49,11 +49,14 @@ class Statement(Program):
         pass
     def Functionbody(self):
         self.linecount += 1
-        while self.line != "RETURN \n" and self.linecount + 1 < len(self.line):
+        while self.line[self.linecount] != "RETURN \n" and self.linecount + 1 < len(self.line):
             self.linecount += 1
-        if (self.line[self.linecount - 1] == "RETURN \n" and self.line[self.linecount] == "RBRACE \n"):
-            self.linecount += 1
-            return
+        if (self.line[self.linecount] == "RETURN \n"):
+            if self.line[self.linecount] == "RBRACE \n":
+                self.linecount += 1
+                return
+            else:
+                pass
         else:
             raise Exception("Function must end in }")
     def Functiondec(self):
@@ -83,7 +86,6 @@ class Statement(Program):
 
 
             print(path)
-
 
 
 def main():
