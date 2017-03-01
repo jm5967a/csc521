@@ -5,7 +5,9 @@ pp = pprint.PrettyPrinter(indent=1, depth=10)
 tokens = ["VAR", "IDENT:X", "COMMA", 'VAR', "IDENT Y", "ASSIGN", "IDENT:FOO", "LPAREN", "RPAREN", "EOF"]
 tokens = ["VAR", "IDENT:X", "ASSIGN", "IDENT:FOO", "LPAREN", "RPAREN", "EOF"]
 tokens = ["Print", "NUMBER:9", "ADD", "NUMBER:9", 'EOF']
-
+tokens = ["FUNCTION", "IDENT:X", "LPAREN", "IDENT:Y", 'COMMA', 'IDENT:K', "RPAREN", "EOF"]
+tokens = ["FUNCTION", "IDENT:X", "LPAREN", "IDENT:Y", 'COMMA', 'IDENT:K', "RPAREN", "LBRACE", 'RETURN', 'RBRACE', 'VAR',
+          "IDENT:T", 'ASSIGN', 'NUMBER:2', 'EOF']
 
 # tokens = ["SUB", "IDENT:X", "ADD", "NUMBER:4"]
 # tokens = ["SUB", "IDENT:X", "EXP", "NUMBER:4", "EOF"]
@@ -40,41 +42,115 @@ def is_number(tok):
 
 
 # end utilities
-def FunctionDec(token_index):
+final = []
+
+
+def Program():
     pass
 
 
-def Prints(token_index):
-    token_index += 1
-    print(tokens[token_index])
-    (success, returned_index, returned_subtree) = Expression(token_index)
+def Statement(token_index):
+    returned_index = 0
+    print(len(tokens))
+    while returned_index != len(tokens):
+        (success, returned_index, returned_subtree) = FunctionDec(returned_index)
+        if success:
+            final.append(returned_subtree)
+            returned_index += 1
+        else:
+            (success, returned_index, returned_subtree) = Assignment(returned_index)
+
+            if success:
+                returned_index += 1
+                final.append(returned_subtree)
+            else:
+                (success, returned_index, returned_subtree) = Prints(returned_index)
+                if success:
+                    returned_index += 1
+                    final.append(returned_subtree)
+    return final
+
+
+def Return(token_index):
+    pass
+
+
+def Functionbody(token_index):
+    # need program function
+    if tokens[token_index] == 'RETURN':
+        token_index += 1
+        returned_index = token_index
+        subtree = ['Function Body']
+        return [True, returned_index, subtree]
+    return [False, token_index, []]
+
+
+def Functionparam(token_index):
+    if ("RPAREN" == tokens[token_index]):
+        subtree = ["FunctonParams"]
+        returned_index = token_index + 1
+        return [True, returned_index, subtree]
+    (success, returned_index, returned_subtree) = Namelist(token_index)
     if success:
-        subtree = ["Prints ", returned_subtree]
-        print(subtree)
+        subtree = ["FunctonParams", returned_subtree]
+        returned_index += 1
+        return [True, returned_index, subtree]
+    return [False, token_index, []]
+
+    # subtree = ["FunctonParams", returned_subtree]
+
+
+def FunctionDec(token_index):
+    if 'FUNCTION' == tokens[token_index]:
+        token_index += 1
+        (success, returned_index, returned_subtree) = Name(token_index)
+        if success:
+            subtree = returned_subtree
+            token_index += 1
+            if "LPAREN" == tokens[token_index]:
+                token_index += 1
+                (success, returned_index, returned_subtree) = Functionparam(token_index)
+                if success:
+                    subtree = subtree, returned_subtree
+                    token_index = returned_index
+                    if 'LBRACE' == tokens[token_index]:
+                        token_index += 1
+                        (success, returned_index, returned_subtree) = Functionbody(token_index)
+                        if success:
+                            subtree = 'FunctionDeclaration', subtree
+                            return [True, returned_index, subtree]
+    return [False, token_index, []]
+
+
+def Prints(token_index):
+    if ("PRINT" == tokens[token_index]):
+        token_index += 1
+        (success, returned_index, returned_subtree) = Expression(token_index)
+        if success:
+            subtree = ["Prints ", returned_subtree]
+            return [True, returned_index, subtree]
+    return [False, token_index, []]
 
 
 def Namelist(token_index):
     '''
     <NameList> -> <Name> COMMA <NameList> | <Name>
     '''
-    if tokens[token_index] == 'VAR':
+    (success, returned_index, returned_subtree) = Name(token_index)
+    subtree = returned_subtree
+    if success:
         token_index += 1
-        (success, returned_index, returned_subtree) = Name(token_index)
-        subtree = returned_subtree
-        if success:
+        while tokens[token_index] == "COMMA":
             token_index += 1
-            while tokens[token_index] == "COMMA" and 'VAR' == tokens[token_index + 1]:
-                token_index += 2
-                (success, returned_index, returned_subtree) = Name(token_index)
-                if success:
-                    token_index += 1
-                    subtree = subtree, returned_subtree
+            (success, returned_index, returned_subtree) = Name(token_index)
+            if success:
+                token_index += 1
+                subtree = subtree, returned_subtree
 
-                else:
-                    raise Exception("Namelist Error")
-
-            subtree = ["Namelist", subtree]
-            return [True, returned_index, subtree]
+            else:
+                raise Exception("Namelist Error")
+        subtree = ["Namelist", subtree]
+        return [True, returned_index, subtree]
 
     return [False, token_index, []]
 
@@ -357,4 +433,5 @@ def Number(token_index):
 
 if __name__ == '__main__':
     print("starting __main__")
-pp.pprint(Prints(0))
+    x = Statement(0)
+    pp.pprint(x)
