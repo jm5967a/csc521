@@ -6,10 +6,10 @@ Variables = re.compile("[a-zA-Z]+[a-zA-Z0-9_]*")
 Punct = re.compile(r"[,/[\]:\".\'\(\)]")
 Operaters = re.compile(r"[\+\-\*\/\=]")
 Keywords = {
-    'print': "PRINT ",
-    'function': 'FUNCTION ',
-    'return': 'RETURN ',
-    'var': 'VAR ',
+    'print': "PRINT",
+    'function': 'FUNCTION',
+    'return': 'RETURN',
+    'var': 'VAR',
 }
 
 final = {}

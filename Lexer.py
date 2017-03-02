@@ -7,30 +7,30 @@ Variables = re.compile("[a-zA-Z]+[a-zA-Z0-9_]*")
 Punct = re.compile(r"[,/{\}:\".\'\(\)]")
 Operaters = re.compile(r"[\+\-\*\/\=\^]")
 Keywords = {
-    'print': "PRINT ",
-    'function': 'FUNCTION ',
-    'return': 'RETURN ',
-    'var': 'VAR ',
+    'print': "PRINT",
+    'function': 'FUNCTION',
+    'return': 'RETURN',
+    'var': 'VAR',
 }
 
 
 def puncfunc(start, point, parse):
     Options = {
-        '(': "LPAREN ",
-        ')': 'RPAREN ',
-        '{': 'LBRACE ',
-        '}': 'RBRACE ',
-        ',': 'COMMA ',
-        ':': 'COLON '
+        '(': "LPAREN",
+        ')': 'RPAREN',
+        '{': 'LBRACE',
+        '}': 'RBRACE',
+        ',': 'COMMA',
+        ':': 'COLON'
     }
     final.insert(len(final), Options.get(parse[point][start]))
 
 
 def write(category, start, end, check):
     if (category == "variable"):
-        final.insert(len(final), "Ident: " + check[start:end])
+        final.insert(len(final), "IDENT:" + check[start:end])
     elif (category == "number"):
-        final.insert(len(final), "Number: " + check[start:end])
+        final.insert(len(final), "NUMBER:" + check[start:end])
 
 
 def main():
@@ -73,11 +73,11 @@ def main():
                     matchstart = matchend
                 elif (re.search(Operaters, parse[pointer][matchstart])):
                     Options = {
-                        '+': "ADD ",
-                        '-': 'SUB ',
-                        '*': 'MULT ',
-                        '/': 'DIV ',
-                        '=': 'Assign ',
+                        '+': "ADD",
+                        '-': 'SUB',
+                        '*': 'MULT',
+                        '/': 'DIV',
+                        '=': 'Assign',
                         '^': 'EXP'
                     }
                     final.insert(len(final), Options.get(parse[pointer][matchstart]))
@@ -93,7 +93,7 @@ def main():
             matchstart = 0
         file = open('testfile.txt', 'w')
         for char in final:
-            file.write(char + "\n")
+            file.write(char + ",")
         file.close()
         print(final)
 

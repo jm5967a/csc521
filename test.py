@@ -11,6 +11,11 @@ tokens = ["FUNCTION", "IDENT:X", "LPAREN", "IDENT:Y", 'COMMA', 'IDENT:K', "RPARE
 tokens = ["FUNCTION", "IDENT:X", "LPAREN", "IDENT:Y", 'COMMA', 'IDENT:K', "RPAREN", "LBRACE", 'RETURN', 'IDENT:yk',
           'RBRACE', 'VAR',
           "IDENT:T", 'ASSIGN', 'NUMBER:2', 'EOF']
+file = open("testfile.txt", "r")
+tokens = file.read().split(",")
+tokens[len(tokens) - 1] = "EOF"
+print(tokens)
+
 
 # tokens = ["SUB", "IDENT:X", "ADD", "NUMBER:4"]
 # tokens = ["SUB", "IDENT:X", "EXP", "NUMBER:4", "EOF"]
