@@ -6,7 +6,10 @@ tokens = ["VAR", "IDENT:X", "COMMA", 'VAR', "IDENT Y", "ASSIGN", "IDENT:FOO", "L
 tokens = ["VAR", "IDENT:X", "ASSIGN", "IDENT:FOO", "LPAREN", "RPAREN", "EOF"]
 tokens = ["Print", "NUMBER:9", "ADD", "NUMBER:9", 'EOF']
 tokens = ["FUNCTION", "IDENT:X", "LPAREN", "IDENT:Y", 'COMMA', 'IDENT:K', "RPAREN", "EOF"]
-tokens = ["FUNCTION", "IDENT:X", "LPAREN", "IDENT:Y", 'COMMA', 'IDENT:K', "RPAREN", "LBRACE", 'RETURN', 'RBRACE', 'VAR',
+# tokens = ["FUNCTION", "IDENT:X", "LPAREN", "IDENT:Y", 'COMMA', 'IDENT:K', "RPAREN", "LBRACE", 'RETURN', 'RBRACE', 'VAR',
+#  "IDENT:T", 'ASSIGN', 'NUMBER:2','PRINT','NUMBER:2', 'EOF']
+tokens = ["FUNCTION", "IDENT:X", "LPAREN", "IDENT:Y", 'COMMA', 'IDENT:K', "RPAREN", "LBRACE", 'RETURN', 'IDENT:yk',
+          'RBRACE', 'VAR',
           "IDENT:T", 'ASSIGN', 'NUMBER:2', 'EOF']
 
 # tokens = ["SUB", "IDENT:X", "ADD", "NUMBER:4"]
@@ -51,36 +54,78 @@ def Program():
 
 def Statement(token_index):
     returned_index = 0
-    print(len(tokens))
-    while returned_index != len(tokens):
+
+    while returned_index + 1 != len(tokens):
+
         (success, returned_index, returned_subtree) = FunctionDec(returned_index)
         if success:
-            final.append(returned_subtree)
+            final.append(["Statement", returned_subtree])
+
             returned_index += 1
         else:
             (success, returned_index, returned_subtree) = Assignment(returned_index)
-
             if success:
-                returned_index += 1
-                final.append(returned_subtree)
-            else:
-                (success, returned_index, returned_subtree) = Prints(returned_index)
-                if success:
-                    returned_index += 1
-                    final.append(returned_subtree)
+                final.append(["Statement", returned_subtree])
+            (success, returned_index, returned_subtree) = Prints(returned_index)
+            if success:
+                final.append(["Statement", returned_subtree])
+
+
+
     return final
 
 
+def Param(token_index):
+    # < ParameterList > -> < Parameter > COMMA < ParameterList > | < Parameter >
+    # < Parameter > -> < Expression > | < Name >
+    subtree = []
+
+    def Parameter(token_index):
+        token_index += 1
+        (success, returned_index, returned_subtree) = Expression(token_index)
+        if success:
+            subtree = ['Parameter', returned_subtree]
+            return [True, returned_index, subtree]
+        (success, returned_index, returned_subtree) = Name(token_index)
+        if success:
+            subtree = ['Parameter', returned_subtree]
+            return [True, returned_index, subtree]
+        return [False, token_index, []]
+
+    (success, returned_index, returned_subtree) = Parameter(token_index)
+
+    if success:
+        returned_index += 1
+
+        if 'COMMA' == tokens[returned_index]:
+            while tokens[returned_index] == 'COMMA':
+                returned_index += 1
+                (success, returned_index, returned_subtree) = Parameter(token_index)
+                subtree.append(returned_subtree)
+                returned_index += 1
+            return [True, returned_index, subtree]
+        subtree = ['Parameter List', returned_subtree]
+
+        return [True, returned_index, subtree]
+    return [False, token_index, []]
+
 def Return(token_index):
-    pass
+    (success, returned_index, returned_subtree) = Param(token_index)
+    if success:
+        subtree = ["RETURN", returned_subtree]
+        return [True, returned_index, subtree]
+    return [False, token_index, []]
+
+
 
 
 def Functionbody(token_index):
     # need program function
     if tokens[token_index] == 'RETURN':
+        (success, returned_index, returned_subtree) = Return(token_index)
         token_index += 1
         returned_index = token_index
-        subtree = ['Function Body']
+        subtree = ['Function Body', returned_subtree]
         return [True, returned_index, subtree]
     return [False, token_index, []]
 
@@ -112,13 +157,18 @@ def FunctionDec(token_index):
                 (success, returned_index, returned_subtree) = Functionparam(token_index)
                 if success:
                     subtree = subtree, returned_subtree
+
                     token_index = returned_index
                     if 'LBRACE' == tokens[token_index]:
                         token_index += 1
                         (success, returned_index, returned_subtree) = Functionbody(token_index)
+
                         if success:
-                            subtree = 'FunctionDeclaration', subtree
-                            return [True, returned_index, subtree]
+                            returned_index += 1
+                            if "RBRACE" == tokens[returned_index]:
+                                subtree = ['FunctionDeclaration', subtree, returned_subtree]
+                                print(subtree)
+                                return [True, returned_index, subtree]
     return [False, token_index, []]
 
 
@@ -128,6 +178,7 @@ def Prints(token_index):
         (success, returned_index, returned_subtree) = Expression(token_index)
         if success:
             subtree = ["Prints ", returned_subtree]
+
             return [True, returned_index, subtree]
     return [False, token_index, []]
 
@@ -187,7 +238,7 @@ def Assignment(token_index):
     if success:
         subtree = ["Assignment1", returned_subtree]
         return [True, returned_index, subtree]
-
+    return [False, token_index, []]
 
 def Expression(token_index):
     '''<Expression> ->
