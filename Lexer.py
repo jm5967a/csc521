@@ -53,10 +53,8 @@ def main():
                 if (re.search(Punct, parse[pointer][matchstart])):
                     puncfunc(matchstart, pointer, parse)
                     matchstart += 1
-                elif (parse[pointer] in Keywords):
-                    final.insert(len(final), Keywords.get(parse[pointer]))
-                    break
                 elif (re.search(Variables, parse[pointer][matchstart])):
+                    checker = 0
                     matchend = matchstart
                     search = matchstart + 1
                     if re.search(Punct, parse[pointer]) is not None or re.search(Operaters, parse[pointer]) is not None:
@@ -69,8 +67,13 @@ def main():
                         while search - 1 != check and re.search(Variables, parse[pointer][matchstart:search]):
                             matchend += 1
                             search += 1
-                    write('variable', matchstart, matchend, word)
-                    matchstart = matchend
+                    if parse[pointer][matchstart:matchend] in Keywords:
+                        final.insert(len(final), Keywords.get(parse[pointer][matchstart:matchend]))
+                        matchstart = matchend
+                        checker = 1
+                    if checker == 0:
+                        write('variable', matchstart, matchend, word)
+                        matchstart = matchend
                 elif (re.search(Operaters, parse[pointer][matchstart])):
                     Options = {
                         '+': "ADD",

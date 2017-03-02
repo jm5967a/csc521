@@ -1,6 +1,6 @@
 import pprint
 
-pp = pprint.PrettyPrinter(indent=1, depth=10)
+pp = pprint.PrettyPrinter(indent=1, depth=100)
 
 tokens = ["VAR", "IDENT:X", "COMMA", 'VAR', "IDENT Y", "ASSIGN", "IDENT:FOO", "LPAREN", "RPAREN", "EOF"]
 tokens = ["VAR", "IDENT:X", "ASSIGN", "IDENT:FOO", "LPAREN", "RPAREN", "EOF"]
@@ -14,7 +14,6 @@ tokens = ["FUNCTION", "IDENT:X", "LPAREN", "IDENT:Y", 'COMMA', 'IDENT:K', "RPARE
 file = open("testfile.txt", "r")
 tokens = file.read().split(",")
 tokens[len(tokens) - 1] = "EOF"
-print(tokens)
 
 
 # tokens = ["SUB", "IDENT:X", "ADD", "NUMBER:4"]
@@ -172,7 +171,6 @@ def FunctionDec(token_index):
                             returned_index += 1
                             if "RBRACE" == tokens[returned_index]:
                                 subtree = ['FunctionDeclaration', subtree, returned_subtree]
-                                print(subtree)
                                 return [True, returned_index, subtree]
     return [False, token_index, []]
 
