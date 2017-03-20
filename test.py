@@ -64,7 +64,6 @@ def Statement(token_index):
         (success, returned_index, returned_subtree) = FunctionDec(returned_index)
         if success:
             final.append(["Statement", returned_subtree])
-
             returned_index += 1
         else:
             (success, returned_index, returned_subtree) = Assignment(returned_index)
@@ -73,6 +72,9 @@ def Statement(token_index):
             (success, returned_index, returned_subtree) = Prints(returned_index)
             if success:
                 final.append(["Statement", returned_subtree])
+                print(tokens[returned_index])
+        if returned_index == 0:
+            raise Exception("Syntax Error")
 
 
 
@@ -183,6 +185,7 @@ def Prints(token_index):
             subtree = ["Prints ", returned_subtree]
 
             return [True, returned_index, subtree]
+
     return [False, token_index, []]
 
 
@@ -404,6 +407,7 @@ def FunctionCallParams(token_index):
     # <ParameterList> RPAREN
     # todo after ParameterList is finished
     # RPAREN
+    (success, returned_index, returned_subtree) = Param(token_index)
     if "RPAREN" == tokens[token_index]:
         subtree = ["FunctionCallParams1", tokens[token_index]]
         return [True, token_index + 1, subtree]
