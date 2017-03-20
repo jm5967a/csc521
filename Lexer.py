@@ -34,14 +34,24 @@ def write(category, start, end, check):
 
 
 def main():
-    while (True):
+    z = 0
+    while (z == 0):
         matchstart = 0
         pointer = 0
         count = 0
         global final
         final = []
-        parse = input("What would you like to parse? ")
+        parse = "function bazfunc(a,b){\
+  var y = a - + b\
+  var z = a - - b\
+  return y,z\
+}\
+var v,w = bazfunc(-5, +2) \
+print v \
+print w"
+
         parse = parse.split(" ")
+        print(parse)
         for i in parse:
             for letters in i:
                 if (count == 0):
@@ -99,6 +109,7 @@ def main():
             file.write(char + ",")
         file.close()
         print(final)
+        z += 1
 
 
 main()

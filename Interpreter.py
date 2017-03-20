@@ -188,22 +188,22 @@ def FunctionParams1(pt, scope):
 
 # <FunctionBody> -> <Program> <Return> | <Return>
 def FunctionBody1(pt, scope):
-
+    pass
 
 # <Return> -> RETURN <ParameterList>
 def Return0(pt, scope):
-
+    pass
 
 # <Assignment> -> <SingleAssignment> | <MultipleAssignment>
 def Assignment0(pt, scope):
-
+    pass
 
 def Assignment1(pt, scope):
-
+    pass
 
 # <SingleAssignment> -> VAR <Name> ASSIGN <Expression>
 def SingleAssignment0(pt, scope):
-
+    pass
 
 # 1. Get name of the variable.
 # 2. Get value of <Expression>
@@ -212,7 +212,7 @@ def SingleAssignment0(pt, scope):
 
 # <MultipleAssignment> -> VAR <NameList> ASSIGN <FunctionCall>
 def MultipleAssignment0(pt, scope):
-
+    pass
 
 # 1. Get list of variable names
 # 2. Get the values returned from the fuction call
@@ -222,7 +222,7 @@ def MultipleAssignment0(pt, scope):
 
 # <Print> -> PRINT <Expression>
 def Print0(pt, scope):
-
+    pass
 
 # <NameList> -> <Name> COMMA <NameList> | <Name>
 def NameList0(pt, scope):
@@ -238,14 +238,14 @@ def NameList1(pt, scope):
 # <ParameterList> -> <Parameter> COMMA <ParameterList> | <Parameter>
 # should return a a list of values.
 def ParameterList0(pt, scope):
-
+    pass
 
 def ParameterList1(pt, scope):
-
+    pass
 
 # <Parameter> -> <Expression> | <Name>
 def Parameter0(pt, scope):
-
+    pass
 
 def Parameter1(pt, scope):
     # pull value out of [value,name]
@@ -271,30 +271,30 @@ def Expression0(pt, scope):
 
 
 def Expression1(pt, scope):
-
-
+    pass
 # <Term> SUB <Expression>
 
 def Expression2(pt, scope):
-
+    pass
 
 # <Term>
 
 # <Term> -> <Factor> MULT <Term> | <Factor> DIV <Term> | <Factor>
 def Term0(pt, scope):
-
+    pass
 
 def Term1(pt, scope):
-
+    pass
 
 def Term2(pt, scope):
-
+    pass
 
 # <Factor> -> <SubExpression> EXP <Factor> | <SubExpression> | <FunctionCall> | <Value> EXP <Factor> | <Value>
 def Factor0(pt, scope):
-
+    pass
 
 def Factor1(pt, scope):
+    pass
 
 
 def Factor2(pt, scope):
@@ -303,9 +303,11 @@ def Factor2(pt, scope):
 
 
 def Factor3(pt, scope):
+    pass
 
 
 def Factor4(pt, scope):
+    pass
 
 
 # <FunctionCall> ->  <Name> LPAREN <FunctionCallParams> COLON <Number> | <Name> LPAREN <FunctionCallParams>
@@ -350,7 +352,7 @@ def FunctionCallParams1(pt, scope):
 
 # <SubExpression> -> LPAREN <Expression> RPAREN
 def SubExpression0(pt, scope):
-
+    pass
 
 # <Value> -> <Name> | <Number>
 def Value0(pt, scope):
@@ -367,11 +369,11 @@ def Name0(pt, scope):
     return [lookup_in_scope_stack(name, scope), name]
 
 
-def Name1(pt, scope): ]
-
+def Name1(pt, scope):
+    pass
 
 def Name2(pt, scope):
-
+    pass
 
 # <Number> -> NUMBER | SUB NUMBER | ADD NUMBER
 def Number0(pt, scope):
@@ -379,14 +381,20 @@ def Number0(pt, scope):
 
 
 def Number1(pt, scope):
-
+    pass
 
 def Number2(pt, scope):
+    pass
 
 
 if __name__ == '__main__':
     # choose a parse tree and initial scope
-    tree = tree_with_function_call
+    file = open("testfile.txt", "r")
+    tokens = file.read().split(",")
+    tokens[len(tokens) - 1] = "EOF"
+    file = open("testfiled.txt", "r")
+    tokens = file.read().split(",")
+    print(tokens[0])
     scope = scope_with_function
     # execute the program starting at the top of the tree
     func_by_name(tree[0], tree, scope)
