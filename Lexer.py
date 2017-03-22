@@ -41,14 +41,8 @@ def main():
         count = 0
         global final
         final = []
-        parse = "function bazfunc(a,b){\
-  var y = a - + b\
-  var z = a - - b\
-  return y,z\
-}\
-var v,w = bazfunc(-5, +2) \
-print v \
-print w"
+        parse = "function test(v1){var c=3 return c}"
+
 
         parse = parse.split(" ")
         print(parse)
@@ -103,7 +97,7 @@ print w"
                         '-': 'SUB',
                         '*': 'MULT',
                         '/': 'DIV',
-                        '=': 'Assign',
+                        '=': 'ASSIGN',
                         '^': 'EXP'
                     }
                     final.insert(len(final),

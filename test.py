@@ -52,28 +52,25 @@ def is_number(tok):
 final = []
 
 
-def Program(token_index):
-    returned_index = 0
-    while returned_index + 1 != len(tokens):
-        returned_index = Statement(token_index, returned_index)
-    return final
+def Program(index):
+    (success, returned_index, returned_subtree) = Statement(index)
 
 
 def Statement(token_index, returned_index):
-    (success, returned_index, returned_subtree) = FunctionDec(returned_index)
-    if success:
-        final.append(["Statement", returned_subtree])
-
-        returned_index += 1
-    else:
-        (success, returned_index, returned_subtree) = Assignment(returned_index)
-        if success:
-            final.append(["Statement", returned_subtree])
-        (success, returned_index, returned_subtree) = Prints(returned_index)
+    while returned_index + 1 != len(tokens):
+        (success, returned_index, returned_subtree) = FunctionDec(returned_index)
         if success:
             final.append(["Statement", returned_subtree])
 
-    return returned_index
+            returned_index += 1
+        else:
+            (success, returned_index, returned_subtree) = Assignment(returned_index)
+            if success:
+                final.append(["Statement", returned_subtree])
+            (success, returned_index, returned_subtree) = Prints(returned_index)
+            if success:
+                final.append(["Statement", returned_subtree])
+    return final
 
 
 def Param(token_index):
@@ -122,9 +119,6 @@ def Return(token_index):
 
 def Functionbody(token_index):
     # need program function
-    print(tokens[token_index])
-    (success, returned_index, returned_subtree) = Statement(token_index)
-    print(tokens[returned_index])
     if tokens[token_index] == 'RETURN':
         (success, returned_index, returned_subtree) = Return(token_index)
         token_index += 1
@@ -151,7 +145,6 @@ def Functionparam(token_index):
 
 def FunctionDec(token_index):
     if 'FUNCTION' == tokens[token_index]:
-
         token_index += 1
         (success, returned_index, returned_subtree) = Name(token_index)
         if success:
@@ -159,9 +152,7 @@ def FunctionDec(token_index):
             token_index += 1
             if "LPAREN" == tokens[token_index]:
                 token_index += 1
-
                 (success, returned_index, returned_subtree) = Functionparam(token_index)
-
                 if success:
                     subtree = subtree, returned_subtree
 
@@ -169,13 +160,11 @@ def FunctionDec(token_index):
                     if 'LBRACE' == tokens[token_index]:
                         token_index += 1
                         (success, returned_index, returned_subtree) = Functionbody(token_index)
-                        print(2)
-                        if success:
 
+                        if success:
                             returned_index += 1
                             if "RBRACE" == tokens[returned_index]:
                                 subtree = ['FunctionDeclaration', subtree, returned_subtree]
-
                                 return [True, returned_index, subtree]
     return [False, token_index, []]
 
@@ -492,8 +481,5 @@ def Number(token_index):
 
 if __name__ == '__main__':
     print("starting __main__")
-    x = Program(0)
-    print(x)
-    file = open('testfiled.txt', 'w')
-    file.write(str(x))
-    file.close()
+    x = Statement(0)
+    pp.pprint(x)
