@@ -4,7 +4,7 @@ final = []
 punc = re.compile(r"[+-/*]")
 Numbers = re.compile("((\d+(\.\d*)?)|(\.\d+))")
 Variables = re.compile("[a-zA-Z]+[a-zA-Z0-9_]*")
-Punct = re.compile(r"[,/{\}:\".\'\(\)]")
+Punct = re.compile(r"[,{\}:\".\'\(\)]")
 Operaters = re.compile(r"[\+\-\*\/\=\^]")
 Keywords = {
     'print': "PRINT",
@@ -42,7 +42,7 @@ def main():
         global final
         final = []
         parse = "function test(v1){var c=3 return c}"
-
+        parse = "var x = (5 * 2) / 5 print x"
 
         parse = parse.split(" ")
         print(parse)
@@ -91,7 +91,10 @@ def main():
                     if checker == 0:
                         write('variable', matchstart, matchend, word)
                         matchstart = matchend
+
                 elif re.search(Operaters, parse[pointer][matchstart]):
+
+                    print(parse[pointer][matchstart])
                     Options = {
                         '+': "ADD",
                         '-': 'SUB',
