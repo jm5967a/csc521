@@ -1,7 +1,8 @@
 from __future__ import print_function
-import sys
-import pprint
 
+import json
+import pprint
+import sys
 
 pp = pprint.PrettyPrinter(indent=1, depth=100)
 
@@ -92,6 +93,7 @@ def eprint(msg):
     '''
     print(msg, file=sys.stderr)
 
+
 def lookup_in_scope_stack(name, scope):
     '''Returns values (including declared functions!) from the scope.
     name - A string value holding the name of a bound variable or function.
@@ -100,7 +102,7 @@ def lookup_in_scope_stack(name, scope):
     returns - the value associated with the name in scope.
     '''
     # turn this on for better debugging
-    #eprint("lookup_in_scope_stack() "+ str(name))
+    # eprint("lookup_in_scope_stack() "+ str(name))
 
     if name in scope:
         return scope[name]
@@ -115,7 +117,8 @@ def get_name_from_ident(tok):
     '''
     eprint("get_name_from_ident() " + tok)
     colon_index = tok.find(":")
-    return tok[colon_index +1:]
+    return tok[colon_index + 1:]
+
 
 def get_number_from_ident(tok):
     '''Returns the float lexeme associated with an NUMBER token, tok.
@@ -123,6 +126,7 @@ def get_number_from_ident(tok):
     eprint("get_number_from_ident() " + tok)
     colon_index = tok.find(":")
     return float(tok[colon_index + 1:])
+
 
 def func_by_name(*args):
     '''Calls a function whos name is given as a parameter. It requires the parse
@@ -143,24 +147,30 @@ def func_by_name(*args):
     return returnval
 
 
-#end utilities
+# end utilities
 
 # <Program> -> <Statement> <Program> | <Statement>
 def Program0(pt, scope):
-    return -1
+    func_by_name(pt[1][0], pt[1], scope)
+    func_by_name(pt[2][0], pt[2], scope)
+
 
 def Program1(pt, scope):
     func_by_name(pt[1][0], pt[1], scope)
 
+
 # <Statement> -> <FunctionDeclaration> | <Assignment> | <Print>
 def Statement0(pt, scope):
-    return -1
+    func_by_name(pt[1][0], pt[1], scope)
+
 
 def Statement1(pt, scope):
-    return -1
+    func_by_name(pt[1][0], pt[1], scope)
+
 
 def Statement2(pt, scope):
     func_by_name(pt[1][0], pt[1], scope)
+
 
 # <FunctionDeclaration> -> FUNCTION <Name> PAREN <FunctionParams> LBRACE <FunctionBody> RBRACE
 def FunctionDeclaration0(pt, scope):
@@ -176,31 +186,41 @@ def FunctionDeclaration0(pt, scope):
         function foo(p1, p2, p3) { [the function body] }
     #Bonus: check for return value length at declaration time
     '''
+    fname = func_by_name(pt[2][0], pt[2], scope)[1]
+    pnames = func_by_name(pt[4][0], pt[4], scope)
+    scope[fname] = [pnames, pt[6]]
+
 
 # <FunctionParams> -> <NameList> RPAREN | RPAREN
 # should return a list of values
 def FunctionParams0(pt, scope):
     return func_by_name(pt[1][0], pt[1], scope)
 
+
 def FunctionParams1(pt, scope):
     return []
 
+
 # <FunctionBody> -> <Program> <Return> | <Return>
 def FunctionBody1(pt, scope):
-    return -1
+    return func_by_name(pt[1][0], pt[1], scope)
 
 
 # <Return> -> RETURN <ParameterList>
 def Return0(pt, scope):
-    return -1
+    return func_by_name(pt[2][0], pt[2], scope)
 
 
 # <Assignment> -> <SingleAssignment> | <MultipleAssignment>
+
+# <Assignment> -> <SingleAssignment> | <MultipleAssignment>
 def Assignment0(pt, scope):
-    return -1
+    func_by_name(pt[1][0], pt[1], scope)
+
 
 def Assignment1(pt, scope):
-    return -1
+    func_by_name(pt[1][0], pt[1], scope)
+
 
 # <SingleAssignment> -> VAR <Name> ASSIGN <Expression>
 def SingleAssignment0(pt, scope):
@@ -208,7 +228,10 @@ def SingleAssignment0(pt, scope):
     # 2. Get value of <Expression>
     # 3. Bind name to value in scope.
     # Bonus: error if the name already exists in scope -- no rebinding
-    return -1
+    vname = func_by_name(pt[2][0], pt[2], scope)[1]
+    value = func_by_name(pt[4][0], pt[4], scope)
+    scope[vname] = value
+
 
 # <MultipleAssignment> -> VAR <NameList> ASSIGN <FunctionCall>
 def MultipleAssignment0(pt, scope):
@@ -216,96 +239,116 @@ def MultipleAssignment0(pt, scope):
     # 2. Get the values returned from the fuction call
     # Bonus: error if any name already exists in scope -- no rebinding
     # Bonus: error if the number of variable names does not match the number of values
-    return -1
+    func_by_name(pt[2][0], pt[2], scope)
+    func_by_name(pt[4][0], pt[4], scope)
+
 
 # <Print> -> PRINT <Expression>
 def Print0(pt, scope):
     print(str(func_by_name(pt[2][0], pt[2], scope)))
+
 
 # <NameList> -> <Name> COMMA <NameList> | <Name>
 def NameList0(pt, scope):
     param_name = func_by_name(pt[1][0], pt[1], scope)[1]
     return [param_name] + func_by_name(pt[3][0], pt[3], scope)
 
+
 def NameList1(pt, scope):
-    #getting the [1] of the return value for name as it returns a [val, name]
+    # getting the [1] of the return value for name as it returns a [val, name]
     return [func_by_name(pt[1][0], pt[1], scope)[1]]
 
+
 # <ParameterList> -> <Parameter> COMMA <ParameterList> | <Parameter>
-#should return a a list of values.
+# should return a a list of values.
 def ParameterList0(pt, scope):
-    return -1
+    val = func_by_name(pt[1][0], pt[1], scope)
+    return [val] + func_by_name(pt[3][0], pt[3], scope)
+
 
 def ParameterList1(pt, scope):
-    return -1
+    return [func_by_name(pt[1][0], pt[1], scope)]
+
 
 # <Parameter> -> <Expression> | <Name>
 def Parameter0(pt, scope):
-    return -1
+    return func_by_name(pt[1][0], pt[1], scope)
+
 
 def Parameter1(pt, scope):
     #pull value out of [value,name]
     return func_by_name(pt[1][0], pt[1], scope)[0]
 
-def SingleAssignment0(pt, scope):
-    '''
-    <SingleAssignment> -> VAR <Name> ASSIGN <Expression>
-    1. Get name from <Name>
-    2. Get value from <Expression>
-    3. Place the name to value binding into scope
-    #bonus Print error message if name was already boudn in scope.
-    '''
-    return -1
 
-
-#<Expression> -> <Term> ADD <Expression> | <Term> SUB <Expression> | <Term>
 def Expression0(pt, scope):
-    #<Term> ADD <Expression>
-    left_value = func_by_name(pt[1][0], pt[1], scope)
-    right_value = func_by_name(pt[3][0], pt[3], scope)
-    return left_value + right_value
+    # <Term> ADD <Expression>
+    val1 = func_by_name(pt[1][0], pt[1], scope)
+    val2 = func_by_name(pt[3][0], pt[3], scope)
+    return val1 + val2
+
 
 def Expression1(pt, scope):
     # <Term> SUB <Expression>
-    left_value = func_by_name(pt[1][0], pt[1], scope)
-    right_value = func_by_name(pt[3][0], pt[3], scope)
-    return left_value - right_value
+    val1 = func_by_name(pt[1][0], pt[1], scope)
+    val2 = func_by_name(pt[3][0], pt[3], scope)
+    return val1 - val2
+
 
 def Expression2(pt, scope):
     # <Term>
     return func_by_name(pt[1][0], pt[1], scope)
 
 
-#<Term> -> <Factor> MULT <Term> | <Factor> DIV <Term> | <Factor>
+# <Term> -> <Factor> MULT <Term> | <Factor> DIV <Term> | <Factor>
 def Term0(pt, scope):
-    return -1
+    # <Factor>
+    val1 = func_by_name(pt[1][0], pt[1], scope)
+    # MULT
+    # <Term>
+    val2 = func_by_name(pt[3][0], pt[3], scope)
+    return val1 * val2
+
 
 def Term1(pt, scope):
-    return -1
+    # <Factor>
+    val1 = func_by_name(pt[1][0], pt[1], scope)
+    # DIV
+    # <Term>
+    val2 = func_by_name(pt[3][0], pt[3], scope)
+    return val1 / val2
+
 
 def Term2(pt, scope):
+    return func_by_name(pt[1][0], pt[1], scope, scope)
+
+
+# <Factor> -> <SubExpression> EXP <Factor> | <SubExpression> | <FunctionCall> | <Value> EXP <Factor> | <Value>
+def Factor0(pt, scope):
+    val1 = func_by_name(pt[1][0], pt[1], scope)
+    val2 = func_by_name(pt[3][0], pt[3], scope)
+    return val1 ** val2
+
+
+def Factor1(pt, scope):
     return func_by_name(pt[1][0], pt[1], scope)
 
 
-#<Factor> -> <SubExpression> EXP <Factor> | <SubExpression> | <FunctionCall> | <Value> EXP <Factor> | <Value>
-def Factor0(pt, scope):
-    return -1
-
-def Factor1(pt, scope):
-    return -1
-
 def Factor2(pt, scope):
     # returns multiple values -- use the first by default.
-    return -1
+    return func_by_name(pt[1][0], pt[1], scope)
+
 
 def Factor3(pt, scope):
-    return -1
+    val1 = func_by_name(pt[1][0], pt[1], scope)
+    val2 = func_by_name(pt[3][0], pt[3], scope)
+    return val1 ** val2
+
 
 def Factor4(pt, scope):
     return func_by_name(pt[1][0], pt[1], scope)
 
 
-#<FunctionCall> ->  <Name> LPAREN <FunctionCallParams> COLON <Number> | <Name> LPAREN <FunctionCallParams>
+# <FunctionCall> ->  <Name> LPAREN <FunctionCallParams> COLON <Number> | <Name> LPAREN <FunctionCallParams>
 def FunctionCall0(pt, scope):
     '''
     This is the most complex part of the interpreter as it involves executing a
@@ -320,7 +363,17 @@ def FunctionCall0(pt, scope):
     8. Return one value from the list of return values that corresponds to the index number.
     Bonus: Flag an error if the index value is greater than the number of values returned by the function body.
     '''
-    return -1
+    functionscop = {"parent:": scope}
+    value = func_by_name(pt[1][0], pt[1], scope)
+    function_store = value[0]
+    findex = int(func_by_name(pt[5][0], pt[5], scope))
+    pvalues = func_by_name(pt[3][0], pt[3], scope)
+    pnames = function_store[0]
+    for index in range(0, len(pvalues)):
+        functionscop[pnames[index]] = pvalues[index]
+    returns = func_by_name(function_store[1][0], function_store[1], functionscop)
+    return returns[findex]
+
 
 def FunctionCall1(pt, scope):
     '''
@@ -334,31 +387,41 @@ def FunctionCall1(pt, scope):
     6. Run the FunctionBody subtree that is part of the stored function information.
     7. Return the list of values generated by the <FunctionBody>
     '''
-    return -1
+    functionscop = {"parent:": scope}
+    value = func_by_name(pt[1][0], pt[1], scope)
+    function_store = value[0]
+    pvalues = func_by_name(pt[3][0], pt[3], scope)
+    pnames = function_store[0]
+    for index in range(0, len(pvalues)):
+        functionscop[pnames[index]] = pvalues[index]
+    returns = func_by_name(function_store[1][0], function_store[1], functionscop)
+    return returns
 
 
-#<FunctionCallParams> ->  <ParameterList> RPAREN | RPAREN
+# <FunctionCallParams> ->  <ParameterList> RPAREN | RPAREN
 def FunctionCallParams0(pt, scope):
     return func_by_name(pt[1][0], pt[1], scope)
+
 
 def FunctionCallParams1(pt, scope):
     return []
 
 
-#<SubExpression> -> LPAREN <Expression> RPAREN
+# <SubExpression> -> LPAREN <Expression> RPAREN
 def SubExpression0(pt, scope):
-    return -1
+    return func_by_name(pt[2][0], pt[2], scope)
 
 
-#<Value> -> <Name> | <Number>
+# <Value> -> <Name> | <Number>
 def Value0(pt, scope):
     return func_by_name(pt[1][0], pt[1], scope)[0]
+
 
 def Value1(pt, scope):
     return func_by_name(pt[1][0], pt[1], scope)
 
 
-#<Name> -> IDENT | SUB IDENT | ADD IDENT
+# <Name> -> IDENT | SUB IDENT | ADD IDENT
 def Name0(pt, scope):
     name = get_name_from_ident(pt[1])
     return [lookup_in_scope_stack(name, scope), name]
@@ -368,17 +431,20 @@ def Name1(pt, scope):
     name = get_name_from_ident(pt[2])
     return [-lookup_in_scope_stack(name, scope), name]
 
+
 def Name2(pt, scope):
     name = get_name_from_ident(pt[2])
     return [lookup_in_scope_stack(name, scope), name]
 
 
-#<Number> -> NUMBER | SUB NUMBER | ADD NUMBER
+# <Number> -> NUMBER | SUB NUMBER | ADD NUMBER
 def Number0(pt, scope):
     return get_number_from_ident(pt[1])
 
+
 def Number1(pt, scope):
     return -get_number_from_ident(pt[2])
+
 
 def Number2(pt, scope):
     return get_number_from_ident(pt[2])
@@ -398,12 +464,14 @@ e1tree = ['Program1',
               ['Expression2',
                ['Term2', ['Factor4', ['Value1', ['Number0', 'NUMBER:3']]]]]]]]]]
 
+e1tree = input()
+e1tree = json.loads(e1tree)
 
 if __name__ == '__main__':
     # choose a parse tree and initial scope
     tree = e1tree
     scope = {}
-    #execute the program starting at the top of the tree
+    # execute the program starting at the top of the tree
     func_by_name(tree[0], tree, scope)
     # Uncomment to see the final scope after the program has executed.
-    #pp.pprint(scope)
+    # pp.pprint(scope)

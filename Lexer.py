@@ -41,11 +41,8 @@ def main():
         count = 0
         global final
         final = []
-        parse = "function test(v1){var c=3 return c}"
-        parse = "var x = (5 * 2) / 5 print x"
-
+        parse = raw_input()
         parse = parse.split(" ")
-        print(parse)
         for i in parse:
             for letters in i:
                 if count == 0:
@@ -69,7 +66,7 @@ def main():
                                              parse[pointer][
                                              matchstart:search]) and
                                    (re.search(Variables,
-                                              parse[pointer][matchend]) or
+                                              parse[pointer][matchend]) or parse[pointer][matchend] == "_" or
                                             re.search(Numbers,
                                                       parse[pointer][matchend])
                                         is not None)):
@@ -93,8 +90,6 @@ def main():
                         matchstart = matchend
 
                 elif re.search(Operaters, parse[pointer][matchstart]):
-
-                    print(parse[pointer][matchstart])
                     Options = {
                         '+': "ADD",
                         '-': 'SUB',
@@ -116,11 +111,12 @@ def main():
                     matchstart = matchend
             pointer += 1
             matchstart = 0
-        file = open('testfile.txt', 'w')
+
+        send = []
         for char in final:
-            file.write(char + ",")
-        file.close()
-        print(final)
+            send.append(char + ",")
+        x = ''.join(send)
+        print(x)
         z += 1
 
 
