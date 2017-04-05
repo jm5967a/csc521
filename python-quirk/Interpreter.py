@@ -465,7 +465,12 @@ e1tree = ['Program1',
                ['Term2', ['Factor4', ['Value1', ['Number0', 'NUMBER:3']]]]]]]]]]
 
 e1tree = raw_input()  # get user input
-e1tree = json.loads(e1tree) #deserialize input
+
+try:
+    e1tree = json.loads(e1tree)  # deserialize input
+except:
+
+    list(e1tree)
 
 
 
