@@ -1,6 +1,32 @@
 # ProgramLang_HW1
 
-Basic Lexer, Parser and Interpreter for the Quirk Lanuage. 
+Basic Lexer, Parser and Interpreter for the Quirk Language. The code is designed to be run on Python 2.7, but it can
+be easily modified to run on 3.4/3.5 by changing raw_input() to input() in each file. Each file is capable of running
+independently, but the input must be json encoded if you are attempting to run the interpreter. Examples 4 and 5 don't
+work fully on the parser because of an error with multiple assignments.
+
+Instructions to run:
+On terminal with piping
+
+(NOTE: LEXER INPUT MUST BE SEPARATED BY SPACES NOT NEW LINES (IE-- print 2 not print\n2)
+Make a .txt file with the desired input. I named it passthrough.txt, but it could be called anything.
+python Lexer.py < passthrough.txt | python Parser.py| python Interpreter.py
+
+If you wanted to run the Lexer independently:
+python Lexer.py
+then type in desired input
+
+If you wanted to run Parser independently:
+python Parser.py
+then type in desired input (The tokens must be separated by commas)
+
+
+If you wanted to run Interpreter independently:
+python Interpreter.py
+then type in desired input (The tokens must be encoded with json)
+
+
+
 The Language grammar is below:
 <Program> -> <Statement> <Program> | <Statement>
 
