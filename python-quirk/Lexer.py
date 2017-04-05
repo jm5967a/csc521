@@ -41,7 +41,7 @@ def main():
         count = 0
         global final
         final = []
-        parse = input() #get input to parse
+        parse = raw_input()  # get input to parse
         parse = parse.split(" ")
         for i in parse: #set up a loop to go through each index by spaces 
             for letters in i: #go through each character of each index
@@ -80,7 +80,7 @@ def main():
                             matchend += 1
                             search += 1
                     if parse[pointer][matchstart:matchend] in Keywords:  #check to see if any of the matches characters match a keyword
-                        final.insert(len(final), insert keyword if match
+                        final.insert(len(final),  #insert keyword if match
                                      Keywords.get(parse[pointer]
                                                   [matchstart:matchend]))
                         matchstart = matchend

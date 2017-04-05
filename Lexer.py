@@ -80,7 +80,7 @@ def main():
                             matchend += 1
                             search += 1
                     if parse[pointer][matchstart:matchend] in Keywords:  #check to see if any of the matches characters match a keyword
-                        final.insert(len(final), insert keyword if match
+                        final.insert(len(final),  # insert keyword if match
                                      Keywords.get(parse[pointer]
                                                   [matchstart:matchend]))
                         matchstart = matchend

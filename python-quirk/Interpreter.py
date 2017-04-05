@@ -464,8 +464,10 @@ e1tree = ['Program1',
               ['Expression2',
                ['Term2', ['Factor4', ['Value1', ['Number0', 'NUMBER:3']]]]]]]]]]
 
-e1tree = input() #get user input
+e1tree = raw_input()  # get user input
 e1tree = json.loads(e1tree) #deserialize input
+
+
 
 if __name__ == '__main__':
     # choose a parse tree and initial scope
