@@ -63,7 +63,8 @@ tree_with_function_call = ["FunctionCall0",
                                'SUB',
                                ['Expression2',
                                 ['Term2', ['Factor4', ['Value1', ['Number0',
-                                                                  'NUMBER:4']]]]
+                                                                  'NUMBER:4']]]
+                                 ]
                                 ]
                                ]
                               ],
@@ -113,7 +114,7 @@ def lookup_in_scope_stack(name, scope):
             return lookup_in_scope_stack(name, scope["__parent__"])
 
 
-def get_name_from_ident(tok):  #gets the variable name
+def get_name_from_ident(tok):  # gets the variable name
     '''Returns the string lexeme associated with an IDENT token, tok.
     '''
     eprint("get_name_from_ident() " + tok)
@@ -121,7 +122,7 @@ def get_name_from_ident(tok):  #gets the variable name
     return tok[colon_index + 1:]
 
 
-def get_number_from_ident(tok):  #gets the number
+def get_number_from_ident(tok):  # gets the number
     '''Returns the float lexeme associated with an NUMBER token, tok.
     '''
     eprint("get_number_from_ident() " + tok)
@@ -130,9 +131,9 @@ def get_number_from_ident(tok):  #gets the number
 
 
 def func_by_name(*args):
-    '''Calls a function whos name is given as a parameter. It requires the parse
-        tree associated with that point in the grammar traversal and the current
-        scope.
+    '''Calls a function whos name is given as a parameter. It requires the
+    parse tree associated with that point in the grammar traversal and the
+        current scope.
     *args is interpreted as
         name = args[0] -- the name of the function to call
         pt = args[1] -- the subtree of the parse tree associated with the name
@@ -173,8 +174,7 @@ def Statement2(pt, scope):
     func_by_name(pt[1][0], pt[1], scope)
 
 
-# <FunctionDeclaration> -> FUNCTION <Name> PAREN <FunctionParams> LBRACE <FunctionBody> RBRACE
-def FunctionDeclaration0(pt, scope):  #gets the function
+def FunctionDeclaration0(pt, scope):  # gets the function
     '''
     1. Get function name.
     2. Get names of parameters.
@@ -235,11 +235,12 @@ def SingleAssignment0(pt, scope):
 
 
 # <MultipleAssignment> -> VAR <NameList> ASSIGN <FunctionCall>
-def MultipleAssignment0(pt, scope):  #gets all of the variables and the values
+def MultipleAssignment0(pt, scope):  # gets all of the variables and the values
     # 1. Get list of variable names
     # 2. Get the values returned from the fuction call
     # Bonus: error if any name already exists in scope -- no rebinding
-    # Bonus: error if the number of variable names does not match the number of values
+    # Bonus: error if the number of variable names does not match the number
+    # of values
     func_by_name(pt[2][0], pt[2], scope)
     func_by_name(pt[4][0], pt[4], scope)
 
@@ -277,7 +278,7 @@ def Parameter0(pt, scope):
 
 
 def Parameter1(pt, scope):
-    #pull value out of [value,name]
+    # pull value out of [value,name]
     return func_by_name(pt[1][0], pt[1], scope)[0]
 
 
@@ -323,7 +324,8 @@ def Term2(pt, scope):
     return func_by_name(pt[1][0], pt[1], scope, scope)
 
 
-# <Factor> -> <SubExpression> EXP <Factor> | <SubExpression> | <FunctionCall> | <Value> EXP <Factor> | <Value>
+# <Factor> -> <SubExpression> EXP <Factor> | <SubExpression> | <FunctionCall>
+# | <Value> EXP <Factor> | <Value>
 def Factor0(pt, scope):
     val1 = func_by_name(pt[1][0], pt[1], scope)
     val2 = func_by_name(pt[3][0], pt[3], scope)
@@ -349,7 +351,8 @@ def Factor4(pt, scope):
     return func_by_name(pt[1][0], pt[1], scope)
 
 
-# <FunctionCall> ->  <Name> LPAREN <FunctionCallParams> COLON <Number> | <Name> LPAREN <FunctionCallParams>
+# <FunctionCall> ->  <Name> LPAREN <FunctionCallParams> COLON <Number>
+# | <Name> LPAREN <FunctionCallParams>
 def FunctionCall0(pt, scope):  # gets the function name, makes new scope,
     # gets parameter values, runs the function body subtree
     '''
@@ -360,20 +363,24 @@ def FunctionCall0(pt, scope):  # gets the function name, makes new scope,
     3. Make a new scope with old scope as __parent__
     4. Get the list of parameter values.
     5. Bind parameter names to parameter values in the new function scope.
-    6. Run the FunctionBody subtree that is part of the stored function information.
+    6. Run the FunctionBody subtree that is part of the stored
+     function information.
     7. Get the index return number.
-    8. Return one value from the list of return values that corresponds to the index number.
-    Bonus: Flag an error if the index value is greater than the number of values returned by the function body.
+    8. Return one value from the list of return values that corresponds
+    to the index number.
+    Bonus: Flag an error if the index value is greater than the number of
+    values returned by the function body.
     '''
-    functionscop = {"parent:": scope} #new scope
+    functionscop = {"parent:": scope}  # new scope
     value = func_by_name(pt[1][0], pt[1], scope)
     function_store = value[0]
     findex = int(func_by_name(pt[5][0], pt[5], scope))
-    pvalues = func_by_name(pt[3][0], pt[3], scope) #pget aram values
-    pnames = function_store[0] #get param names 
+    pvalues = func_by_name(pt[3][0], pt[3], scope)  # pget aram values
+    pnames = function_store[0]  # get param names
     for index in range(0, len(pvalues)):
         functionscop[pnames[index]] = pvalues[index]
-    returns = func_by_name(function_store[1][0], function_store[1], functionscop)
+    returns = func_by_name(function_store[1][0], function_store[1],
+                           functionscop)
     return returns[findex]
 
 
@@ -386,17 +393,20 @@ def FunctionCall1(pt, scope):
     3. Make a new scope with old scope as __parent__
     4. Get the list of parameter values.
     5. Bind parameter names to parameter values in the new function scope.
-    6. Run the FunctionBody subtree that is part of the stored function information.
+    6. Run the FunctionBody subtree that is part of the stored function
+    information.
     7. Return the list of values generated by the <FunctionBody>
     '''
-    functionscop = {"parent:": scope}#new scope
+    functionscop = {"parent:": scope}  # new scope
     value = func_by_name(pt[1][0], pt[1], scope)
-    function_store = value[0] 
-    pvalues = func_by_name(pt[3][0], pt[3], scope) #get param values 
-    pnames = function_store[0] #get param names 
+    function_store = value[0]
+    pvalues = func_by_name(pt[3][0], pt[3], scope)  # get param values
+    pnames = function_store[0]  # get param names
     for index in range(0, len(pvalues)):
         functionscop[pnames[index]] = pvalues[index]
-    returns = func_by_name(function_store[1][0], function_store[1], functionscop) #setup call to func_byname utility to get return  
+    returns = func_by_name(function_store[1][0], function_store[1],
+                           functionscop)  # setup call to func_byname utility
+    # to get return
     return returns
 
 
@@ -464,7 +474,8 @@ e1tree = ['Program1',
               ['Term2', ['Factor4', ['Value1', ['Number0', 'NUMBER:4']]]],
               'SUB',
               ['Expression2',
-               ['Term2', ['Factor4', ['Value1', ['Number0', 'NUMBER:3']]]]]]]]]]
+               ['Term2',
+                ['Factor4', ['Value1', ['Number0', 'NUMBER:3']]]]]]]]]]
 
 e1tree = raw_input()  # get user input
 
@@ -474,13 +485,11 @@ except:
 
     list(e1tree)
 
-
-
 if __name__ == '__main__':
     # choose a parse tree and initial scope
     tree = e1tree
-    scope = {} #establish scope 
+    scope = {}  # establish scope
     # execute the program starting at the top of the tree
-    func_by_name(tree[0], tree, scope) #call main function
+    func_by_name(tree[0], tree, scope)  # call main function
     # Uncomment to see the final scope after the program has executed.
 # pp.pprint(scope)
