@@ -23,7 +23,7 @@ then type in desired input (The tokens must be separated by commas)
 
 If you wanted to run Interpreter independently:
 python Interpreter.py
-then type in desired input (The tokens must be encoded with json)
+then type in desired input
 
 
 
