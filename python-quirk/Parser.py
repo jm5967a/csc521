@@ -1,7 +1,10 @@
 import json
 import pprint
 
-pp = pprint.PrettyPrinter(indent=1, depth=300)
+pp = pprint.PrettyPrinter(indent=1, depth=300)  # ident +1 each row, max depth
+
+
+#  is 300
 
 # begin utilities
 def is_ident(tok):
@@ -282,7 +285,7 @@ def Expression(token_index):  #check expression conditionals
     (success, returned_index, returned_subtree) = Term(token_index)
     if success:
         subtree = ["Expression0", returned_subtree]
-        if "ADD" == tokens[returned_index]:
+        if "ADD" == tokens[returned_index]:  #conditional for ADD
             subtree.append(tokens[returned_index])
             (success, returned_index, returned_subtree) = Expression(
                 returned_index + 1)
@@ -293,7 +296,7 @@ def Expression(token_index):  #check expression conditionals
     (success, returned_index, returned_subtree) = Term(token_index)
     if success:
         subtree = ["Expression1", returned_subtree]
-        if "SUB" == tokens[returned_index]:
+        if "SUB" == tokens[returned_index]:  #conditional for Sub
             subtree.append(tokens[returned_index])
             (success, returned_index, returned_subtree) = Expression(
                 returned_index + 1)
@@ -341,7 +344,7 @@ def Term(token_index):
     return [False, token_index, []]
 
 
-def Factor(token_index):
+def Factor(token_index):  #checks Factor conditionals
     '''
     <Factor> ->
         <SubExpression>
@@ -386,7 +389,7 @@ def Factor(token_index):
     return [False, token_index, []]
 
 
-def FunctionCall(token_index):
+def FunctionCall(token_index):  #conditions for calling a function
     '''
     <FunctionCall> ->
         <Name> LPAREN <FunctionCallParams> COLON <Number>
@@ -461,7 +464,8 @@ def SubExpression(token_index):
     return [False, token_index, []]
 
 
-def Value(token_index):
+def Value(token_index):  # conditionals checks to see if value is a name or
+    # number
     '''
     <Value> ->
         <Name>

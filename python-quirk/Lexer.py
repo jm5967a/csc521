@@ -26,7 +26,8 @@ def puncfunc(start, point, parse): #Quirk Punc.
     final.insert(len(final), Options.get(parse[point][start]))
 
 
-def write(category, start, end, check):
+def write(category, start, end, check):  # check to see if it is a
+    # variable name or number
     if category == "variable":
         final.insert(len(final), "IDENT:" + check[start:end]) 
     elif category == "number":

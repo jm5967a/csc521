@@ -4,7 +4,8 @@ import json
 import pprint
 import sys
 
-pp = pprint.PrettyPrinter(indent=1, depth=100)
+pp = pprint.PrettyPrinter(indent=1, depth=100)  # ident 1 each time,
+# max depth of 100
 
 tree = ['Value0', ['Name1', 'SUB', 'IDENT:x']]
 tree = ['FunctionDeclaration0',
@@ -112,7 +113,7 @@ def lookup_in_scope_stack(name, scope):
             return lookup_in_scope_stack(name, scope["__parent__"])
 
 
-def get_name_from_ident(tok):
+def get_name_from_ident(tok):  #gets the variable name
     '''Returns the string lexeme associated with an IDENT token, tok.
     '''
     eprint("get_name_from_ident() " + tok)
@@ -120,7 +121,7 @@ def get_name_from_ident(tok):
     return tok[colon_index + 1:]
 
 
-def get_number_from_ident(tok):
+def get_number_from_ident(tok):  #gets the number
     '''Returns the float lexeme associated with an NUMBER token, tok.
     '''
     eprint("get_number_from_ident() " + tok)
@@ -173,7 +174,7 @@ def Statement2(pt, scope):
 
 
 # <FunctionDeclaration> -> FUNCTION <Name> PAREN <FunctionParams> LBRACE <FunctionBody> RBRACE
-def FunctionDeclaration0(pt, scope):
+def FunctionDeclaration0(pt, scope):  #gets the function
     '''
     1. Get function name.
     2. Get names of parameters.
@@ -234,7 +235,7 @@ def SingleAssignment0(pt, scope):
 
 
 # <MultipleAssignment> -> VAR <NameList> ASSIGN <FunctionCall>
-def MultipleAssignment0(pt, scope):
+def MultipleAssignment0(pt, scope):  #gets all of the variables and the values
     # 1. Get list of variable names
     # 2. Get the values returned from the fuction call
     # Bonus: error if any name already exists in scope -- no rebinding
@@ -243,7 +244,7 @@ def MultipleAssignment0(pt, scope):
     func_by_name(pt[4][0], pt[4], scope)
 
 
-# <Print> -> PRINT <Expression>
+# <Print> -> PRINT <Expression>    #print function
 def Print0(pt, scope):
     print(str(func_by_name(pt[2][0], pt[2], scope)))
 
@@ -349,7 +350,8 @@ def Factor4(pt, scope):
 
 
 # <FunctionCall> ->  <Name> LPAREN <FunctionCallParams> COLON <Number> | <Name> LPAREN <FunctionCallParams>
-def FunctionCall0(pt, scope):
+def FunctionCall0(pt, scope):  # gets the function name, makes new scope,
+    # gets parameter values, runs the function body subtree
     '''
     This is the most complex part of the interpreter as it involves executing a
     a partial parsetree that is not its direct child.
