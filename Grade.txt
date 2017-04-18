@@ -1,0 +1,15 @@
+Lexer: 25/30
+
+  The lexer should be able to split regardless of a new line. Although
+  this lexer is able to lex all the examples it appears.
+
+Parser: 24/30
+
+  Is able to parse the lexed stream from lexer, but seems to have issues with
+  functions.
+
+Interpreter: 15/20
+
+  Is unable to interpreter example 4 and 5.
+
+Style: 20/20
